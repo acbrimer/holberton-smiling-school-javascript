@@ -124,6 +124,9 @@ body {
 
 /* Section - popular-tutorials */
 .section-popular-tutorials {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background-color: #fff;
 }
 

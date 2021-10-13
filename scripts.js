@@ -123,7 +123,7 @@ class PopularTutorials {
 
   static star = `<span class="text-primary holberton_school-icon-star"></span>`;
 
-  static TutorialCard = (item, active = false) => {
+  static TutorialCard = (item) => {
     const card = $('<div>')
       .addClass('card')
       .addClass('mb-2')
@@ -159,16 +159,14 @@ class PopularTutorials {
       .append($('<div>').addClass('carousel-inner'));
 
     const cards = listToMatrix(
-      this._data.map((item, index) =>
-        PopularTutorials.TutorialCard(item, index === 0)
-      ),
+      this._data.map((item) => PopularTutorials.TutorialCard(item)),
       3
     );
 
     const slides = cards.map((cardRow, index) => {
       const slide = $('<div>').addClass('carousel-item');
       index === 0 && slide.addClass('active');
-      const container = $('<div>').addClass('container');
+      const container = $('<div>').addClass('container-fluid');
       const row = $('<div>').addClass('row');
       cardRow.forEach((card) =>
         row.append($('<div class="col-4">').append(card))
@@ -177,7 +175,9 @@ class PopularTutorials {
       slide.append(container);
       return slide;
     });
+
     elem.append(slides);
+
     targetElem.empty().append(elem);
     targetElem.append(PopularTutorials.previousBtn, PopularTutorials.nextBtn);
   };

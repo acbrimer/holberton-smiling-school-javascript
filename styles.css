@@ -230,6 +230,24 @@ body {
   color: #000;
 }
 
+#latestVideosCarousel {
+  height: 450px;
+}
+
+.section-latest-videos .carousel-control-prev {
+  color: rgba(0, 0, 0, 0.7);
+  height: 0;
+  top: 50%;
+  left: -40px;
+}
+
+.section-latest-videos .carousel-control-next {
+  color: rgba(0, 0, 0, 0.7);
+  height: 0;
+  top: 50%;
+  right: -40px;
+}
+
 /* footer */
 
 .footer .social-links-wrapper {

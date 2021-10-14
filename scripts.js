@@ -41,8 +41,16 @@ $(document).ready(() => {
   let currentBP = getCurrentBreakpoint();
 
   const quoteCarousel = new QuoteCarousel('quotes');
-  const popularTutorials = new PopularTutorials(
+  const popularTutorials = new VideoCarousel(
+    'popularTutorialsCarousel',
     'popularTutorialsTarget',
+    'https://smileschool-api.hbtn.info/popular-tutorials',
+    currentBP
+  );
+  const latestVideos = new VideoCarousel(
+    'latestVideosCarousel',
+    'latestVideosTarget',
+    'https://smileschool-api.hbtn.info/latest-videos',
     currentBP
   );
 
@@ -52,6 +60,7 @@ $(document).ready(() => {
     if (newBP !== currentBP) {
       currentBP = newBP;
       popularTutorials.rerender(newBP);
+      latestVideos.rerender(newBP);
     }
   });
 });
@@ -120,17 +129,20 @@ class QuoteCarousel {
   };
 }
 
-class PopularTutorials {
+class VideoCarousel {
+  _id;
   _target;
+  _dataURL;
+  _cols = 1;
   _data = [];
   _cards = [];
-  _cols = 1;
   static breakpointCols = { xs: 1, sm: 2, md: 3, lg: 4, xl: 4 };
 
-  constructor(target, currentBP) {
+  constructor(id, target, dataURL, currentBP) {
+    this._id = id;
     this._target = target;
-
-    this._cols = PopularTutorials.breakpointCols[currentBP];
+    this._dataURL = dataURL;
+    this._cols = VideoCarousel.breakpointCols[currentBP];
     this.getData = this.getData.bind(this);
     this.render = this.render.bind(this);
     this.rerender = this.rerender.bind(this);
@@ -140,22 +152,24 @@ class PopularTutorials {
 
   getData = () => {
     // added 1 sec timeout to see loading indicator
-    $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
+    $.get(this._dataURL, (data) => {
       this._data = data;
     }).done(() => {
-      this._cards = this._data.map((item) =>
-        PopularTutorials.TutorialCard(item)
-      );
+      this._cards = this._data.map((item) => VideoCarousel.TutorialCard(item));
       this.render();
     });
   };
 
-  static previousBtn = `<a class="carousel-control-prev" href="#popularTutorialsCarousel" role="button" data-slide="prev">
+  static previousBtn = (
+    id
+  ) => `<a class="carousel-control-prev" href="#${id}" role="button" data-slide="prev">
     <span class="holberton_school-icon-arrow_4 carousel-arrow"></span>
     <span class="sr-only">Previous</span>
   </a>`;
 
-  static nextBtn = `<a class="carousel-control-next" href="#popularTutorialsCarousel" role="button" data-slide="next">
+  static nextBtn = (
+    id
+  ) => `<a class="carousel-control-next" href="#${id}" role="button" data-slide="next">
   <span class="holberton_school-icon-arrow_3 carousel-arrow"></span>
   <span class="sr-only">Next</span>
   </a>`;
@@ -181,7 +195,7 @@ class PopularTutorials {
         ),
         $('<div class="row pl-4 pb-2 justify-content-center">').append(
           $('<div class="col-8">').append(
-            [...Array(item.star).keys()].map((s) => PopularTutorials.star)
+            [...Array(item.star).keys()].map((s) => VideoCarousel.star)
           ),
           $('<div class="col-4 text-primary">').text(item.duration)
         )
@@ -190,13 +204,13 @@ class PopularTutorials {
   };
 
   rerender = (bp) => {
-    this._cols = PopularTutorials.breakpointCols[bp];
+    this._cols = VideoCarousel.breakpointCols[bp];
     this.render();
   };
 
   render = () => {
     const targetElem = $(`#${this._target}`) || $('body');
-    const elem = $('<div id="popularTutorialsCarousel" data-ride="carousel">')
+    const elem = $(`<div id=${this._id} data-ride="carousel">`)
       .addClass('carousel')
       .addClass('slide')
       .append($('<div>').addClass('carousel-inner'));
@@ -223,6 +237,9 @@ class PopularTutorials {
     elem.append(slides);
 
     targetElem.empty().append(elem);
-    elem.append(PopularTutorials.previousBtn, PopularTutorials.nextBtn);
+    elem.append(
+      VideoCarousel.previousBtn(this._id),
+      VideoCarousel.nextBtn(this._id)
+    );
   };
 }

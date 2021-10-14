@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>SmileSchool - Courses</title>
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:wght@400;700&display=swap"
+            rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css?family=Coiny:wght@400;700&display=swap" rel="stylesheet" />
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+            integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous" />
+        <link rel="stylesheet" href="/styles.css" />
+        <link rel="stylesheet" href="/theme.min.css" />
+        <link rel="stylesheet" href="/holberton_school-icon/style.css" />
+        <script src="scripts.js"></script>
+    </head>
+
+    <body class="courses-page">
+        <!-- Masthead-->
+        <header class="masthead bg-primary text-white text-center">
+            <!-- Navigation-->
+            <nav class="navbar navbar-expand-sm bg-transparent text-uppercase" id="mainNav">
+                <div class="container">
+                    <button class="
+              col-xs-1
+              navbar-toggler
+              text-uppercase
+              font-weight-bold
+              bg-transparent
+              text-white
+              rounded
+            " type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="holberton_school-icon-menu"></span>
+                    </button>
+
+                    <div class="col col-xs-10 col-sm-6 justify-content-center">
+                        <a class="navbar-brand text-center text-sm-left" href="#">
+                            <div class="container">
+                                <div class="col-xs-12 col-sm-4 col-md-2 pr-1 text-sm-right">
+                                    <img class="img-filter-white" src="/images/favicon.png" width="37" height="30" />
+                                </div>
+                                <div class="col-xs-12 col-sm-8 col-md-10 pl-0 text-sm-left">
+                                    <img src="/images/logo.png" width="136" height="30" />
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-xs-1 col-sm-0"></div>
+                    <div class="nav-collapse collapse navbar-collapse col col-sm-6 justify-content-end"
+                        id="navbarResponsive">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item mx-2 mx-lg-1">
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded text-white" href="#"><small
+                                        class="nav-current">Courses</small></a>
+                            </li>
+                            <li class="nav-item mx-2 mx-lg-1">
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded text-white"
+                                    href="/pricing.html"><small>Pricing</small></a>
+                            </li>
+                            <li class="nav-item mx-2 mx-lg-1">
+                                <a class="nav-link py-3 px-0 px-lg-3 rounded text-white"
+                                    href="#"><small>Login</small></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container d-xs-none d-sm-flex align-items-center flex-column pt-4">
+                <!-- Masthead Heading-->
+                <h1 class="masthead-header">« Don’t cry because it’s over.
+                    <b class="text-primary">Smile</b> because it happened. »
+                </h1>
+
+            </div>
+
+        </header>
+
+        <!-- Search filters section -->
+        <section class="page-section section-search-filters">
+            <form id="searchForm" class="container">
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <!-- input - keyword search -->
+                        <label for="keywords">KEYWORDS</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <span class="holberton_school-icon-search_1"></span>
+                            </span>
+                            <input id="keywords" placeholder="Search keywords" type="text" class="form-control"
+                                aria-label="Keywords">
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <!-- input - topic -->
+                        <label for="topic">TOPIC</label>
+                        <div class="btn-group" role="group">
+                            <button id="topic" type="button" data-toggle="dropdown" value="all"
+                                class="btn btn-default dropdown-toggle">
+                                All
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="text-dark" href="#" data-value="all">All</a></li>
+                                <li><a class="text-dark" href="#" data-value="novice">Novice</a></li>
+                                <li><a class="text-dark" href="#" data-value="intermediate">Intermediate</a></li>
+                                <li><a class="text-dark" href="#" data-value="expert">Expert</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <!-- input - sort -->
+                        <label for="sort">SORT</label>
+                        <div class="btn-group" role="group">
+                            <button id="sort" type="button" data-toggle="dropdown" value="most_popular"
+                                class="btn btn-default dropdown-toggle">
+                                Most Popular
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="text-dark" href="#" data-value="most_popular">Most Popular</a></li>
+                                <li><a class="text-dark" href="#" data-value="most_recent">Most Recent</a></li>
+                                <li><a class="text-dark" href="#" data-value="most_viewed">Most Viewed</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results -->
+        <section class="page-section section-results bg-white pt-5 pb-5">
+            <div class="container">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <small id="resultCount" class="text-small"></small>
+                    </div>
+                </div>
+                <div class="row" id="results"></div>
+            </div>
+        </section>
+        <footer class="footer text-center p-4">
+            <div class="container">
+                <div class="row">
+                    <!-- logo -->
+                    <div class="col-xs-12 col-sm-6 text-center">
+                        <div class="container">
+                            <div class="col-xs-12 col-sm-4 col-md-2 pr-1 text-sm-right">
+                                <img class="img-filter-white" src="/images/favicon.png" width="37" height="30" />
+                            </div>
+                            <div class="col-xs-12 col-sm-8 col-md-10 pl-0 text-sm-left">
+                                <img src="/images/logo.png" width="136" height="30" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- social icons -->
+                    <div class="social-links-wrapper col-xs-12 col-sm-6 justify-content-center">
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item p-0 bg-transparent border-0">
+                                <a class="social-link text-light" href="https://facebook.com" target="_blank">
+                                    <span class="holberton_school-icon-ic_facebook"></span>
+                                </a>
+                            </li>
+                            <li class="list-group-item p-0 bg-transparent border-0 ml-1 mr-1">
+                                <a class="social-link text-light" href="https://facebook.com" target="_blank">
+                                    <span class="holberton_school-icon-ic_twitter"></span>
+                                </a>
+                            </li>
+                            <li class="list-group-item p-0 bg-transparent border-0">
+                                <a class="social-link text-light" href="https://facebook.com" target="_blank">
+                                    <span class="holberton_school-icon-ic_instagram"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="col-12 text-center">
+                        <!-- Copyright Section-->
+                        <div class="copyright py-4 text-center text-white">
+                            <div class="container">
+                                <small>Copyright &copy; Your Website 2021</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </footer>
+
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+
+</html>

@@ -40,8 +40,13 @@ function getCurrentBreakpoint() {
 $(document).ready(() => {
   let currentBP = getCurrentBreakpoint();
 
-  const quoteCarousel = new QuoteCarousel('quotes');
-  const popularTutorials = $('#popularTutorialsTarget').exists()
+  const quoteCarousel = $('#quotes').length
+    ? new QuoteCarousel('quotes')
+    : null;
+
+  const searchForm = $('#results').length ? new SearchForm('results') : null;
+
+  const popularTutorials = $('#popularTutorialsTarget').length
     ? new VideoCarousel(
         'popularTutorialsCarousel',
         'popularTutorialsTarget',
@@ -49,7 +54,7 @@ $(document).ready(() => {
         currentBP
       )
     : null;
-  const latestVideos = $('#latestVideosTarget').exists()
+  const latestVideos = $('#latestVideosTarget').length
     ? new VideoCarousel(
         'latestVideosCarousel',
         'latestVideosTarget',
@@ -133,6 +138,33 @@ class QuoteCarousel {
   };
 }
 
+const TutorialCard = (item) => {
+  const card = $('<div>')
+    .addClass('card')
+    .addClass('mb-2')
+    .append(
+      $('<div class="card-img-wrapper">').append(
+        $('<img>').addClass('card-img-top').attr('src', item.thumb_url)
+      ),
+      $('<div class="card-body">').append(
+        $('<h4>').addClass('card-title').text(item.title),
+        $('<p>').addClass('card-text').text(item['sub-title']),
+        $('<img width="48px" height="48px">')
+          .addClass('img-circle')
+          .addClass('mr-3')
+          .attr('src', item.author_pic_url),
+        $('<author>').addClass('text-primary').text(item.author)
+      ),
+      $('<div class="row pl-4 pb-2 justify-content-center">').append(
+        $('<div class="col-8">').append(
+          [...Array(item.star).keys()].map((s) => VideoCarousel.star)
+        ),
+        $('<div class="col-4 text-primary">').text(item.duration)
+      )
+    );
+  return card;
+};
+
 class VideoCarousel {
   _id;
   _target;
@@ -159,7 +191,7 @@ class VideoCarousel {
     $.get(this._dataURL, (data) => {
       this._data = data;
     }).done(() => {
-      this._cards = this._data.map((item) => VideoCarousel.TutorialCard(item));
+      this._cards = this._data.map((item) => TutorialCard(item));
       this.render();
     });
   };
@@ -179,33 +211,6 @@ class VideoCarousel {
   </a>`;
 
   static star = `<span class="text-primary holberton_school-icon-star"></span>`;
-
-  static TutorialCard = (item) => {
-    const card = $('<div>')
-      .addClass('card')
-      .addClass('mb-2')
-      .append(
-        $('<div class="card-img-wrapper">').append(
-          $('<img>').addClass('card-img-top').attr('src', item.thumb_url)
-        ),
-        $('<div class="card-body">').append(
-          $('<h4>').addClass('card-title').text(item.title),
-          $('<p>').addClass('card-text').text(item['sub-title']),
-          $('<img width="48px" height="48px">')
-            .addClass('img-circle')
-            .addClass('mr-3')
-            .attr('src', item.author_pic_url),
-          $('<author>').addClass('text-primary').text(item.author)
-        ),
-        $('<div class="row pl-4 pb-2 justify-content-center">').append(
-          $('<div class="col-8">').append(
-            [...Array(item.star).keys()].map((s) => VideoCarousel.star)
-          ),
-          $('<div class="col-4 text-primary">').text(item.duration)
-        )
-      );
-    return card;
-  };
 
   rerender = (bp) => {
     this._cols = VideoCarousel.breakpointCols[bp];
@@ -244,6 +249,76 @@ class VideoCarousel {
     elem.append(
       VideoCarousel.previousBtn(this._id),
       VideoCarousel.nextBtn(this._id)
+    );
+  };
+}
+
+class SearchForm {
+  _target;
+  _q = '';
+  _topic = 'all';
+  _sort = 'most_popular';
+
+  _count = 0;
+  _data = [];
+
+  constructor(target) {
+    this._target = target;
+
+    this.getResults = this.getResults.bind(this);
+    this.renderResults = this.renderResults.bind(this);
+
+    $('#keywords').keyup((e) => {
+      if (e.target.value != this._q) {
+        this._q = e.target.value;
+        this.getResults();
+      }
+    });
+    $('#topic')
+      .next()
+      .children()
+      .click((e) => {
+        if ($(e.target).attr('data-value') != this._topic) {
+          this._topic = $(e.target).attr('data-value');
+          $('#topic').attr('value', this._topic).text($(e.target).text());
+          this.getResults();
+        }
+      });
+    $('#sort')
+      .next()
+      .children()
+      .click((e) => {
+        if ($(e.target).attr('data-value') != this._sort) {
+          this._sort = $(e.target).attr('data-value');
+          $('#sort').attr('value', this._sort).text($(e.target).text());
+          this.getResults();
+        }
+      });
+
+    this.getResults();
+  }
+
+  getResults = () => {
+    $.get('https://smileschool-api.hbtn.info/courses', {
+      q: this._q,
+      topic: this._topic,
+      sort: this._sort,
+    }).done(({ courses }) => {
+      this._data = courses;
+      this._count = courses.length;
+      this.renderResults();
+    });
+  };
+
+  renderResults = () => {
+    $('#resultCount').text(`${this._count} video${this._count != 1 && 's'}`);
+    $(`#${this._target}`).empty();
+    $(`#${this._target}`).append(
+      this._data.map((c) =>
+        $('<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">').append(
+          TutorialCard(c)
+        )
+      )
     );
   };
 }

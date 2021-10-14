@@ -1,10 +1,7 @@
-$(document).ready(() => {
-  const quoteCarousel = new QuoteCarousel('quotes');
-  const pipularTutorials = new PopularTutorials('popularTutorialsTarget');
-});
-
-// util function from a StackOverflow answer
-// source: https://stackoverflow.com/questions/4492385/convert-simple-array-into-two-dimensional-array-matrix
+/**
+ * listToMatrix - util function from SO used to group cards in carousel slides
+ * source: https://stackoverflow.com/questions/4492385/convert-simple-array-into-two-dimensional-array-matrix
+ */
 function listToMatrix(list, elementsPerSubArray) {
   var matrix = [],
     i,
@@ -22,6 +19,43 @@ function listToMatrix(list, elementsPerSubArray) {
   return matrix;
 }
 
+const breakpoints = {
+  sm: 576,
+  md: 786,
+  lg: 992,
+  xl: 1200,
+};
+/**
+ * getCurrentBreakpoint - util function to get Bootstrap window size (xs, sm, md, lg, xl)
+ */
+function getCurrentBreakpoint() {
+  const width = $(document).width();
+  return width < 576
+    ? 'xs'
+    : Object.keys(breakpoints)
+        .filter((bp) => width >= breakpoints[bp])
+        .reverse()[0];
+}
+
+$(document).ready(() => {
+  let currentBP = getCurrentBreakpoint();
+
+  const quoteCarousel = new QuoteCarousel('quotes');
+  const popularTutorials = new PopularTutorials(
+    'popularTutorialsTarget',
+    currentBP
+  );
+
+  $(window).resize(() => {
+    const newBP = getCurrentBreakpoint();
+    // handle re-renders for responsive components
+    if (newBP !== currentBP) {
+      currentBP = newBP;
+      popularTutorials.rerender(newBP);
+    }
+  });
+});
+
 class QuoteCarousel {
   _target;
   _data = [];
@@ -36,21 +70,18 @@ class QuoteCarousel {
   }
 
   getData = () => {
-    // added 1 sec timeout to see loading indicator
-    setTimeout(() => {
-      $.get('https://smileschool-api.hbtn.info/quotes', (data) => {
-        this._data = data;
-      }).done(() => this.render());
-    }, 1000);
+    $.get('https://smileschool-api.hbtn.info/quotes', (data) => {
+      this._data = data;
+    }).done(() => this.render());
   };
 
   static previousBtn = `<a class="carousel-control-prev" href="#quotesCarousel" role="button" data-slide="prev">
-  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+  <span class="holberton_school-icon-arrow_4 carousel-arrow"></span>
   <span class="sr-only">Previous</span>
 </a>`;
 
   static nextBtn = `<a class="carousel-control-next" href="#quotesCarousel" role="button" data-slide="next">
-<span class="carousel-control-next-icon" aria-hidden="true"></span>
+<span class="holberton_school-icon-arrow_3 carousel-arrow"></span>
 <span class="sr-only">Next</span>
 </a>`;
   static QuoteItem = (item, active = false) => {
@@ -92,32 +123,40 @@ class QuoteCarousel {
 class PopularTutorials {
   _target;
   _data = [];
+  _cards = [];
+  _cols = 1;
+  static breakpointCols = { xs: 1, sm: 2, md: 3, lg: 4, xl: 4 };
 
-  constructor(target) {
+  constructor(target, currentBP) {
     this._target = target;
 
+    this._cols = PopularTutorials.breakpointCols[currentBP];
     this.getData = this.getData.bind(this);
     this.render = this.render.bind(this);
+    this.rerender = this.rerender.bind(this);
 
     this.getData();
   }
 
   getData = () => {
     // added 1 sec timeout to see loading indicator
-    setTimeout(() => {
-      $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
-        this._data = data;
-      }).done(() => this.render());
-    }, 1000);
+    $.get('https://smileschool-api.hbtn.info/popular-tutorials', (data) => {
+      this._data = data;
+    }).done(() => {
+      this._cards = this._data.map((item) =>
+        PopularTutorials.TutorialCard(item)
+      );
+      this.render();
+    });
   };
 
   static previousBtn = `<a class="carousel-control-prev" href="#popularTutorialsCarousel" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="holberton_school-icon-arrow_4 carousel-arrow"></span>
     <span class="sr-only">Previous</span>
   </a>`;
 
   static nextBtn = `<a class="carousel-control-next" href="#popularTutorialsCarousel" role="button" data-slide="next">
-  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+  <span class="holberton_school-icon-arrow_3 carousel-arrow"></span>
   <span class="sr-only">Next</span>
   </a>`;
 
@@ -134,7 +173,6 @@ class PopularTutorials {
         $('<div class="card-body">').append(
           $('<h4>').addClass('card-title').text(item.title),
           $('<p>').addClass('card-text').text(item['sub-title']),
-          $('<i>').addClass('text-white').text(item.title),
           $('<img width="48px" height="48px">')
             .addClass('img-circle')
             .addClass('mr-3')
@@ -144,11 +182,16 @@ class PopularTutorials {
         $('<div class="row pl-4 pb-2 justify-content-center">').append(
           $('<div class="col-8">').append(
             [...Array(item.star).keys()].map((s) => PopularTutorials.star)
-          )
-        ),
-        $('<div class="col-4 text-primary">').text(item.duration)
+          ),
+          $('<div class="col-4 text-primary">').text(item.duration)
+        )
       );
     return card;
+  };
+
+  rerender = (bp) => {
+    this._cols = PopularTutorials.breakpointCols[bp];
+    this.render();
   };
 
   render = () => {
@@ -158,27 +201,28 @@ class PopularTutorials {
       .addClass('slide')
       .append($('<div>').addClass('carousel-inner'));
 
-    const cards = listToMatrix(
-      this._data.map((item) => PopularTutorials.TutorialCard(item)),
-      3
+    const slides = listToMatrix(this._cards, this._cols).map(
+      (cardRow, index) => {
+        const slide = $('<div>').addClass('carousel-item');
+        index === 0 && slide.addClass('active');
+        const container = $('<div>').addClass('container-fluid');
+        const row = $('<div>').addClass('row');
+        cardRow.forEach((card) =>
+          row.append(
+            $('<div>')
+              .addClass(`col-${12 / this._cols}`)
+              .append(card)
+          )
+        );
+        container.append(row);
+        slide.append(container);
+        return slide;
+      }
     );
-
-    const slides = cards.map((cardRow, index) => {
-      const slide = $('<div>').addClass('carousel-item');
-      index === 0 && slide.addClass('active');
-      const container = $('<div>').addClass('container-fluid');
-      const row = $('<div>').addClass('row');
-      cardRow.forEach((card) =>
-        row.append($('<div class="col-4">').append(card))
-      );
-      container.append(row);
-      slide.append(container);
-      return slide;
-    });
 
     elem.append(slides);
 
     targetElem.empty().append(elem);
-    targetElem.append(PopularTutorials.previousBtn, PopularTutorials.nextBtn);
+    elem.append(PopularTutorials.previousBtn, PopularTutorials.nextBtn);
   };
 }

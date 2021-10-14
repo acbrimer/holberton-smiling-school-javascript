@@ -71,6 +71,12 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+.carousel-arrow {
+  font-weight: 600;
+  font-size: 3rem;
+  transform: scaleY(1.6);
+}
+
 /**
  * non-bootstrap classes 
 */
@@ -122,6 +128,24 @@ body {
   background: var(--primary);
 }
 
+#quotesCarousel {
+  padding: 20px;
+}
+
+.section-quotes .carousel-control-prev {
+  color: white;
+  height: 0;
+  top: 50%;
+  left: -12px;
+}
+
+.section-quotes .carousel-control-next {
+  color: white;
+  height: 0;
+  top: 50%;
+  right: -12px;
+}
+
 /* Section - popular-tutorials */
 .section-popular-tutorials {
   display: flex;
@@ -162,6 +186,24 @@ body {
 .card-img-wrapper:hover::after {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
+}
+
+#popularTutorialsCarousel {
+  height: 450px;
+}
+
+.section-popular-tutorials .carousel-control-prev {
+  color: rgba(0, 0, 0, 0.7);
+  height: 0;
+  top: 50%;
+  left: -40px;
+}
+
+.section-popular-tutorials .carousel-control-next {
+  color: rgba(0, 0, 0, 0.7);
+  height: 0;
+  top: 50%;
+  right: -40px;
 }
 
 /* Section - free membership */

@@ -41,26 +41,30 @@ $(document).ready(() => {
   let currentBP = getCurrentBreakpoint();
 
   const quoteCarousel = new QuoteCarousel('quotes');
-  const popularTutorials = new VideoCarousel(
-    'popularTutorialsCarousel',
-    'popularTutorialsTarget',
-    'https://smileschool-api.hbtn.info/popular-tutorials',
-    currentBP
-  );
-  const latestVideos = new VideoCarousel(
-    'latestVideosCarousel',
-    'latestVideosTarget',
-    'https://smileschool-api.hbtn.info/latest-videos',
-    currentBP
-  );
+  const popularTutorials = $('#popularTutorialsTarget').exists()
+    ? new VideoCarousel(
+        'popularTutorialsCarousel',
+        'popularTutorialsTarget',
+        'https://smileschool-api.hbtn.info/popular-tutorials',
+        currentBP
+      )
+    : null;
+  const latestVideos = $('#latestVideosTarget').exists()
+    ? new VideoCarousel(
+        'latestVideosCarousel',
+        'latestVideosTarget',
+        'https://smileschool-api.hbtn.info/latest-videos',
+        currentBP
+      )
+    : null;
 
   $(window).resize(() => {
     const newBP = getCurrentBreakpoint();
     // handle re-renders for responsive components
     if (newBP !== currentBP) {
       currentBP = newBP;
-      popularTutorials.rerender(newBP);
-      latestVideos.rerender(newBP);
+      popularTutorials && popularTutorials.rerender(newBP);
+      latestVideos && latestVideos.rerender(newBP);
     }
   });
 });
